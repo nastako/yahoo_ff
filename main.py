@@ -50,9 +50,9 @@ def get_tickers_dict(filename):
 
 
 def main():
-    stock = 'TSLA'
+    stock = 'AAPL'
     print requests.get_endperiods_a(stock)
-    print requests.get_revenues_a(stock)
+    print requests.get_totoalrevenue_a(stock)
     print requests.get_grossprofit_a(stock)
     print requests.get_researchdevelopment_a(stock)
     print requests.get_nonrecurring_a(stock)
