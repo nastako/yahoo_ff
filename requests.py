@@ -8,6 +8,7 @@ from tools import *
 
 #TODO get_keystats
 
+
 def get_mc(stock):
     source_code = get_source_code(get_keystats_url(stock))
     mc = source_code.split(
@@ -55,11 +56,47 @@ class yahoo_ff:
                               'Other Items',
                               'Net Income Applicable To Common Shares']
 
+    balancesheet_fields =    ['Cash And Cash Equivalents',
+                              'Short Term Investments',
+                              'Net Receivables',
+                              'Inventory',
+                              'Other Current Assets',
+                              'Total Current Assets',
+                              'Long Term Investments',
+                              'Property Plant and Equipment',
+                              'Goodwill',
+                              'Intangible Assets',
+                              'Accumulated Amortization',
+                              'Other Assets',
+                              'Deferred Long Term Asset Charges',
+                              'Total Assets',
+                              'Accounts Payable',
+                              'Short/Current Long Term Debt',
+                              'Other Current Liabilities',
+                              'Total Current Liabilities',
+                              'Long Term Debt',
+                              'Other Liabilities',
+                              'Deferred Long Term Liability Charges',
+                              'Minority Interest',
+                              'Negative Goodwill',
+                              'Total Liabilities',
+                              'Misc Stocks Options Warrants',
+                              'Redeemable Preferred Stock',
+                              'Preferred Stock',
+                              'Common Stock',
+                              'Retained Earnings',
+                              'Treasury Stock',
+                              'Capital Surplus',
+                              'Other Stockholder Equity',
+                              'Total Stockholder Equity',
+                              'Net Tangible Assets']
+
     def __init__(self, ticker):
         self.ticker = ticker
         self.__construct_incomestatement_annual()
         self.__construct_incomestatement_quarterly()
-
+        self.__construct_balancesheet_annual()
+        self.__construct_balancesheet_quarterly()
 
     def __construct_incomestatement_annual(self):
         html = get_source_code(get_annual_incomestatement_url(self.ticker))
@@ -77,12 +114,38 @@ class yahoo_ff:
 
         print 'Quarterly income statement for ' + str(self.ticker) + ' successfuly obtained'
 
+    def __construct_balancesheet_annual(self):
+        html = get_source_code(get_annual_balancesheet_url(self.ticker))
+        self.balancesheet_annual = self.__get_endofperiods(html)
+        for field in self.balancesheet_fields:
+            self.balancesheet_annual[field] = request(html, field)
+
+        print 'Annual balance sheet for ' + str(self.ticker) + ' successfuly obtained'
+
+    def __construct_balancesheet_quarterly(self):
+        html = get_source_code(get_quarterly_balancesheet_url(self.ticker))
+        self.balancesheet_quarterly = self.__get_endofperiods(html)
+        for field in self.balancesheet_fields:
+            self.balancesheet_quarterly[field] = request(html, field)
+
+        print 'Quarterly balance sheet for ' + str(self.ticker) + ' successfuly obtained'
+
     def __get_endofperiods(self, html):
         source_code = html
         end_periods = source_code.split('Period Ending')[1]
-        end_periods = end_periods.split('</th></TR><tr>')[0]
+        end_periods = end_periods.split('</TR>')[0]
+        end_periods = end_periods.replace('<TD class="yfnc_modtitle1" align="right"><b>','')
+        end_periods = end_periods.replace('<th scope="col" style="border-top:2px solid '
+                                          '#000;text-align:right; font-weight:bold">','')
+        end_periods = end_periods.replace('</span></small></td>','')
+        end_periods = end_periods.replace('</span></small></TD>','')
+        end_periods = end_periods.replace('</b>','')
+
         end_periods = end_periods.split('</th>')
-        return {'endofperiods': [parser.parse(x[-12:]) for x in end_periods]}
+        if len(end_periods) == 1:
+            end_periods = end_periods[0].split('</TD>')
+
+        return {'endofperiods': [parser.parse(x[-12:]) for x in end_periods if x is not '']}
 
 
 

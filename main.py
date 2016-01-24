@@ -56,6 +56,8 @@ def main():
     pp = pprint.PrettyPrinter(indent=0)
     pp.pprint (data.incomestatement_annual)
     pp.pprint (data.incomestatement_quarterly)
+    pp.pprint(data.balancesheet_annual)
+    pp.pprint(data.balancesheet_quarterly)
 
 
 

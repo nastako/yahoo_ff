@@ -34,6 +34,14 @@ def get_quarterly_incomestatement_url(stock):
     return 'https://finance.yahoo.com/q/is?s='+stock
 
 
+def get_annual_balancesheet_url(stock):
+    return 'https://finance.yahoo.com/q/bs?s='+stock+'&annual'
+
+
+def get_quarterly_balancesheet_url(stock):
+    return 'https://finance.yahoo.com/q/bs?s='+stock
+
+
 def get_keystats_url(stock):
     return 'http://finance.yahoo.com/q/ks?s=' + stock
 
