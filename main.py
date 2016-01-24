@@ -1,64 +1,46 @@
 __author__ = 'Alexandre'
 
-
-import csv
 import time
 from requests import *
 import pprint
 import pandas as pd
+import os
 
 
 def wait(seconds):
     time.sleep(seconds)
 
 
-def write_stats(tickers, filename):
-    print 'writing to file...'
-    writer = csv.writer(open(filename, 'wb'))
-    # write headers
-    writer.writerow(tickers[tickers.keys()[0]].keys())
-    for ticker in tickers:
-        writer.writerow(tickers[ticker].values())
-
-
-def get_stats_for(tickers):
-    for ticker in tickers.keys():
-        print 'getting stats for ', ticker
-        try:
-            names, stats = get_key_stats(ticker)
-            wait(0.2) # being a good citizen
-            for name, stat in zip(names,stats):
-                tickers[ticker][name] = stat
-        # keep ticker stats only if all stats are valid
-        except Exception, e:
-            tickers.pop(ticker, None)
-            print 'failed to save to dict ', str(e)
-    # example of tickers {'AGN':
-    # {'prm': 88.4, 'roa': 1.7, 'name': 'Allergan plc','mc': 121710000000.0}
-    return tickers
-
-
-def get_tickers_dict(filename):
-    tickers = {}
-    try:
-        f = open(filename,'r').read()
-        split_file = f.split('\n')
-        for line in split_file:
-            split_line = line.split(',')
-            tickers[split_line[0]] = {'name': split_line[1],'industry': split_line[2]}
-        return tickers
-    except Exception, e:
-        print 'failed in get_tickers_dict', str(e)
-
-
 def main():
-    data = yahoo_ff('tsla')
     pp = pprint.PrettyPrinter(indent=0)
-    pp.pprint (data.incomestatement_annual)
-    pp.pprint (data.incomestatement_quarterly)
-    pp.pprint(data.balancesheet_annual)
-    pp.pprint(data.balancesheet_quarterly)
+    path = os.getcwd()
 
+    try:
+        f = open('sp500.txt', 'r').read()
+        split_file = f.split('\n')
+        ticker = 'aapl'
+
+        for ticker in split_file:
+            wait(.2)
+            data = yahoo_ff('aapl')
+            isa = pd.DataFrame(data.incomestatement_annual)
+            bsa = pd.DataFrame(data.balancesheet_annual)
+            csa = pd.DataFrame(data.cashflow_annual)
+            df = pd.merge(isa,bsa,on='endofperiod')
+            df1 = pd.merge(df,csa,on='endofperiod')
+            df1.set_index('endofperiod', inplace=True)
+            df1.transpose().to_csv(path + '/database/' + ticker + '_annual.csv')
+            wait(.2)
+            isa = pd.DataFrame(data.incomestatement_quarterly)
+            bsa = pd.DataFrame(data.balancesheet_quarterly)
+            csa = pd.DataFrame(data.cashflow_quarterly)
+            df = pd.merge(isa, bsa, on='endofperiod')
+            df1 = pd.merge(df, csa, on='endofperiod')
+            df1.set_index('endofperiod', inplace=True)
+            df1.transpose().to_csv(path + '/database/' + ticker + '_quarterly.csv')
+            
+    except Exception,e:
+        print 'failed in mainloop at ' + ticker + ' ' + str(e)
 
 
 if __name__ == "__main__":

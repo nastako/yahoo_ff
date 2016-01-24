@@ -91,16 +91,36 @@ class yahoo_ff:
                               'Total Stockholder Equity',
                               'Net Tangible Assets']
 
+    cashflow_fields =        ['Depreciation',
+                              'Adjustments To Net Income',
+                              'Changes In Accounts Receivables',
+                              'Changes In Liabilities',
+                              'Changes In Inventories',
+                              'Changes In Other Operating Activities',
+                              'Total Cash Flow From Operating Activities',
+                              'Capital Expenditures',
+                              'Investments',
+                              'Other Cash flows from Investing Activities',
+                              'Total Cash Flows From Investing Activities',
+                              'Dividends Paid',
+                              'Sale Purchase of Stock',
+                              'Net Borrowings',
+                              'Other Cash Flows from Financing Activities',
+                              'Effect Of Exchange Rate Changes',
+                              'Change In Cash and Cash Equivalents']
+
     def __init__(self, ticker):
         self.ticker = ticker
         self.__construct_incomestatement_annual()
         self.__construct_incomestatement_quarterly()
         self.__construct_balancesheet_annual()
         self.__construct_balancesheet_quarterly()
+        self.__construct_cashflow_annual()
+        self.__construct_cashflow_quarterly()
 
     def __construct_incomestatement_annual(self):
         html = get_source_code(get_annual_incomestatement_url(self.ticker))
-        self.incomestatement_annual = self.__get_endofperiods(html)
+        self.incomestatement_annual = self.__get_endofperiod(html)
         for field in self.incomestatement_fields:
             self.incomestatement_annual[field] = request(html, field)
 
@@ -108,7 +128,7 @@ class yahoo_ff:
 
     def __construct_incomestatement_quarterly(self):
         html = get_source_code(get_quarterly_incomestatement_url(self.ticker))
-        self.incomestatement_quarterly = self.__get_endofperiods(html)
+        self.incomestatement_quarterly = self.__get_endofperiod(html)
         for field in self.incomestatement_fields:
             self.incomestatement_quarterly[field] = request(html, field)
 
@@ -116,7 +136,7 @@ class yahoo_ff:
 
     def __construct_balancesheet_annual(self):
         html = get_source_code(get_annual_balancesheet_url(self.ticker))
-        self.balancesheet_annual = self.__get_endofperiods(html)
+        self.balancesheet_annual = self.__get_endofperiod(html)
         for field in self.balancesheet_fields:
             self.balancesheet_annual[field] = request(html, field)
 
@@ -124,28 +144,45 @@ class yahoo_ff:
 
     def __construct_balancesheet_quarterly(self):
         html = get_source_code(get_quarterly_balancesheet_url(self.ticker))
-        self.balancesheet_quarterly = self.__get_endofperiods(html)
+        self.balancesheet_quarterly = self.__get_endofperiod(html)
         for field in self.balancesheet_fields:
             self.balancesheet_quarterly[field] = request(html, field)
 
         print 'Quarterly balance sheet for ' + str(self.ticker) + ' successfuly obtained'
 
-    def __get_endofperiods(self, html):
+    def __construct_cashflow_annual(self):
+        html = get_source_code(get_annual_cashflow_url(self.ticker))
+        self.cashflow_annual = self.__get_endofperiod(html)
+        for field in self.cashflow_fields:
+            self.cashflow_annual[field] = request(html, field)
+
+        print 'Cash flows for ' + str(self.ticker) + ' successfuly obtained'
+
+    def __construct_cashflow_quarterly(self):
+        html = get_source_code(get_quarterly_cashflow_url(self.ticker))
+        self.cashflow_quarterly = self.__get_endofperiod(html)
+        for field in self.cashflow_fields:
+            self.cashflow_quarterly[field] = request(html, field)
+
+        print 'Cash flows for ' + str(self.ticker) + ' successfuly obtained'
+
+    def __get_endofperiod(self, html):
         source_code = html
         end_periods = source_code.split('Period Ending')[1]
         end_periods = end_periods.split('</TR>')[0]
-        end_periods = end_periods.replace('<TD class="yfnc_modtitle1" align="right"><b>','')
+        end_periods = end_periods.replace('<TD class="yfnc_modtitle1" align="right"><b>', '')
         end_periods = end_periods.replace('<th scope="col" style="border-top:2px solid '
-                                          '#000;text-align:right; font-weight:bold">','')
-        end_periods = end_periods.replace('</span></small></td>','')
-        end_periods = end_periods.replace('</span></small></TD>','')
-        end_periods = end_periods.replace('</b>','')
+                                          '#000;text-align:right; font-weight:bold">', '')
+        end_periods = end_periods.replace('</span></small></td>', '')
+        end_periods = end_periods.replace('</span></small></TD>', '')
+        end_periods = end_periods.replace('</b>', '')
 
         end_periods = end_periods.split('</th>')
         if len(end_periods) == 1:
             end_periods = end_periods[0].split('</TD>')
 
-        return {'endofperiods': [parser.parse(x[-12:]) for x in end_periods if x is not '']}
+        return {'endofperiod': [parser.parse(x[-12:]) for x in end_periods if x is not '']}
+
 
 
 

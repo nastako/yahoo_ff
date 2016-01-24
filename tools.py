@@ -42,6 +42,14 @@ def get_quarterly_balancesheet_url(stock):
     return 'https://finance.yahoo.com/q/bs?s='+stock
 
 
+def get_annual_cashflow_url(stock):
+    return 'https://finance.yahoo.com/q/cf?s='+stock+'&annual'
+
+
+def get_quarterly_cashflow_url(stock):
+    return 'https://finance.yahoo.com/q/cf?s='+stock
+
+
 def get_keystats_url(stock):
     return 'http://finance.yahoo.com/q/ks?s=' + stock
 
