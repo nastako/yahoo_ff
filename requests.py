@@ -1,4 +1,4 @@
-__author__ = 'Alexandre'
+author = 'Alexandre'
 
 from dateutil import parser
 from tools import *
@@ -35,159 +35,57 @@ def get_roa(stock):
 
 
 class yahoo_ff:
+    incomestatement_fields = ['Total Revenue',
+                              'Cost of Revenue',
+                              'Gross Profit',
+                              'Research Development',
+                              'Selling General and Administrative',
+                              'Non Recurring',
+                              'Total Operating Expenses',
+                              'Total Other Income/Expenses Net',
+                              'Earnings Before Interest And Taxes',
+                              'Interest Expense',
+                              'Income Before Tax',
+                              'Income Tax Expense',
+                              'Minority Interest',
+                              'Net Income From Continuing Ops',
+                              'Discontinued Operations',
+                              'Extraordinary Items',
+                              'Effect Of Accounting Changes',
+                              'Other Items',
+                              'Net Income Applicable To Common Shares']
 
     def __init__(self, ticker):
-        # assumes self is the ticker
-
         self.ticker = ticker
+        self.__construct_incomestatement_annual()
+        self.__construct_incomestatement_quarterly()
 
-        self.incomestatement_annual_yahoo_html = get_source_code(
-                                                 get_annual_incomestatement_url(self.ticker))
 
-        self.__get_endofperiods()
-
-        self.__get_totoalrevenue()
-        self.__get_costofrevenue()
-        self.__get_grossprofit()
-        self.__get_sellinggeneralandadministrative()
-        self.__get_nonrecurring()
-        self.__get_otheroperatingexpenses()
-        self.__get_totalotherincome()
-        self.__get_ebit()
-        self.__get_interestexpense()
-        self.__get_incomebeforetax()
-        self.__get_incometaxexpense()
-        self.__get_minorityinterest()
-        self.__get_netincomefromcontinuingops()
-        self.__get_discontinuedoperations()
-        self.__get_extraitems()
-        self.__get_accountingchanges()
-        self.__get_otheritems()
-        self.__get_netincome()
+    def __construct_incomestatement_annual(self):
+        html = get_source_code(get_annual_incomestatement_url(self.ticker))
+        self.incomestatement_annual = self.__get_endofperiods(html)
+        for field in self.incomestatement_fields:
+            self.incomestatement_annual[field] = request(html, field)
 
         print 'Annual income statement for ' + str(self.ticker) + ' successfuly obtained'
 
-    def get_annual_incomesatement(self):
-        print   [self.endofperiods,
-                 self.totalrevenue,
-                 self.costofrevenue,
-                 self.grossprofit,
-                 self.sellinggeneralandadministrative,
-                 self.nonrecurring,
-                 self.otheroperatingexpenses,
-                 self.totalotherincome,
-                 self.ebit,
-                 self.interestexpense,
-                 self.incomebeforetax,
-                 self.incometaxexpense,
-                 self.minorityinterest,
-                 self.netincomefromcontinuingops,
-                 self.discontinuedoperations,
-                 self.extraitems,
-                 self.accountingchanges,
-                 self.otheritems,
-                 self.netincome]
+    def __construct_incomestatement_quarterly(self):
+        html = get_source_code(get_quarterly_incomestatement_url(self.ticker))
+        self.incomestatement_quarterly = self.__get_endofperiods(html)
+        for field in self.incomestatement_fields:
+            self.incomestatement_quarterly[field] = request(html, field)
 
-    def __get_totoalrevenue(self):
-        field = 'Total Revenue'
-        self.totalrevenue = {field :
-                annual_incomestatement_request(self.incomestatement_annual_yahoo_html, field)}
+        print 'Quarterly income statement for ' + str(self.ticker) + ' successfuly obtained'
 
-    def __get_costofrevenue(self):
-        field = 'Cost of Revenue'
-        self.costofrevenue = {field :
-                annual_incomestatement_request(self.incomestatement_annual_yahoo_html, field)}
-
-    def __get_grossprofit(self):
-        field = 'Gross Profit'
-        self.grossprofit = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_researchdevelopment(self):
-        field = 'Research Development'
-        return {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_sellinggeneralandadministrative(self):
-        field = 'Selling General and Administrative'
-        self.sellinggeneralandadministrative = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_nonrecurring(self):
-        field = 'Non Recurring'
-        self.nonrecurring = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_otheroperatingexpenses(self):
-        field = 'Others'
-        self.otheroperatingexpenses = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_totalotherincome(self):
-        field = 'Total Other Income/Expenses Net'
-        self.totalotherincome = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_ebit(self):
-        field = 'Earnings Before Interest And Taxes'
-        self.ebit = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_interestexpense(self):
-        field = 'Interest Expense'
-        self.interestexpense = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_incomebeforetax(self):
-        field = 'Income Before Tax'
-        self.incomebeforetax = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_incometaxexpense(self):
-        field = 'Income Tax Expense'
-        self.incometaxexpense = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_minorityinterest(self):
-        field = 'Minority Interest'
-        self.minorityinterest = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_netincomefromcontinuingops(self):
-        field = 'Net Income From Continuing Ops'
-        self.netincomefromcontinuingops = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_discontinuedoperations(self):
-        field = 'Minority Interest'
-        self.discontinuedoperations = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_extraitems(self):
-        field = 'Extraordinary Items'
-        self.extraitems = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_accountingchanges(self):
-        field = 'Effect Of Accounting Changes'
-        self.accountingchanges = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_otheritems(self):
-        field = 'Other Items'
-        self.otheritems = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-    def __get_netincome(self):
-        field = 'Net Income From Continuing Ops'
-        self.netincome = {field : annual_incomestatement_request(self.incomestatement_annual_yahoo_html,
-                field)}
-
-
-    def __get_endofperiods(self):
-        source_code = self.incomestatement_annual_yahoo_html
+    def __get_endofperiods(self, html):
+        source_code = html
         end_periods = source_code.split('Period Ending')[1]
         end_periods = end_periods.split('</th></TR><tr>')[0]
         end_periods = end_periods.split('</th>')
-        self.endofperiods = {'endofperiods' :[parser.parse(x[-12:]) for x in end_periods]}
+        return {'endofperiods': [parser.parse(x[-12:]) for x in end_periods]}
+
+
+
+
+
 

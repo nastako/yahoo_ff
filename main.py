@@ -4,6 +4,9 @@ __author__ = 'Alexandre'
 import csv
 import time
 from requests import *
+import pprint
+import pandas as pd
+
 
 def wait(seconds):
     time.sleep(seconds)
@@ -49,9 +52,10 @@ def get_tickers_dict(filename):
 
 
 def main():
-    aapl = yahoo_ff('AAPL')
-    aapl.get_annual_incomesatement()
-
+    data = yahoo_ff('tsla')
+    pp = pprint.PrettyPrinter(indent=0)
+    pp.pprint (data.incomestatement_annual)
+    pp.pprint (data.incomestatement_quarterly)
 
 
 
