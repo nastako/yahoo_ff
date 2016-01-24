@@ -3,8 +3,7 @@ __author__ = 'Alexandre'
 
 import csv
 import time
-import requests
-
+from requests import *
 
 def wait(seconds):
     time.sleep(seconds)
@@ -50,20 +49,10 @@ def get_tickers_dict(filename):
 
 
 def main():
-    stock = 'AAPL'
-    print requests.get_endperiods_a(stock)
-    print requests.get_totoalrevenue_a(stock)
-    print requests.get_grossprofit_a(stock)
-    print requests.get_researchdevelopment_a(stock)
-    print requests.get_nonrecurring_a(stock)
+    aapl = yahoo_ff('AAPL')
+    aapl.get_annual_incomesatement()
 
-    # filename = 'sp500'
-    #
-    # tickers = get_tickers_dict(filename + '.txt')
-    #
-    # tickers = get_stats_for(tickers)
-    #
-    # write_stats(tickers, filename + '.csv')
+
 
 
 if __name__ == "__main__":

@@ -18,18 +18,16 @@ def float_or_none(x):
 
 
 
-def yahoo_income_statement_request(stock, information):
+def annual_incomestatement_request(source_code, information):
     return  parse_table(
-            find_section(
-            get_source_code(
-            get_income_statement_a_url(stock)),information))
+            find_section(source_code,information))
 
 
-def get_income_statement_a_url(stock):
+def get_annual_incomestatement_url(stock):
     return 'https://finance.yahoo.com/q/is?s='+stock+'&annual'
 
 
-def get_income_statement_q_url(stock):
+def get_quarterly_incomestatement_url(stock):
     return 'https://finance.yahoo.com/q/is?s='+stock
 
 
