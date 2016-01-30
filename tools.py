@@ -89,7 +89,6 @@ def get_infos(source_code):
     industry = source_code.split('Industry:')[1].split('</td>')[1].replace('</a>','').split('>')[-1]
     employees = source_code.split('Full Time Employees:')[1].split('</td>')[1].replace('</a>',
                                                                                     '').split('>')[-1]
-    print employees
     return {'sector' : sector, 'industry' : industry, 'full time employees': float_or_none(employees)}
 
 
