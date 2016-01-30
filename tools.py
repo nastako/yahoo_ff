@@ -13,7 +13,9 @@ def parse_powers(x):
 
 
 def float_or_none(x):
+     x = x.replace(',','')
      try:
+         # if negative value (1000)
          if x[0]=='(' and x[-1]==')':
             return -float(x[1:-2])
          else:
@@ -50,6 +52,10 @@ def get_quarterly_cashflow_url(stock):
     return 'https://finance.yahoo.com/q/cf?s='+stock
 
 
+def get_stockinfo_url(stock):
+    return 'http://finance.yahoo.com/q/pr?s='+stock+'+Profile'
+
+
 def get_keystats_url(stock):
     return 'http://finance.yahoo.com/q/ks?s=' + stock
 
@@ -76,3 +82,12 @@ def find_section(source_code, section_name):
         return source_code.split(section_name)[1]
     except:
         print 'failed acquiring ' + section_name
+
+
+def get_infos(source_code):
+    sector = source_code.split('Sector:')[1].split('</td>')[1].replace('</a>','').split('>')[-1]
+    industry = source_code.split('Industry:')[1].split('</td>')[1].replace('</a>','').split('>')[-1]
+    employees = source_code.split('Full Time Employees:')[1].split('</td>')[1].replace('</a>',
+                                                                                    '').split('>')[-1]
+    print employees
+    return {'sector' : sector, 'industry' : industry, 'full time employees': float_or_none(employees)}
