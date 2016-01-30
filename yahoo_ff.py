@@ -2,8 +2,9 @@ author = 'Alexandre'
 
 from dateutil import parser
 from tools import *
-from yahoo_finance import Share
 import Quandl
+import pandas as pd
+
 import constants
 
 #TODO get_metadata
@@ -84,6 +85,7 @@ class yahoo_ff:
         source_code = html
         end_periods = source_code.split('Period Ending')[1]
         end_periods = end_periods.split('</TR>')[0]
+        # take out unwanted html formatting
         end_periods = end_periods.replace('<TD class="yfnc_modtitle1" align="right"><b>', '')
         end_periods = end_periods.replace('<th scope="col" style="border-top:2px solid '
                                           '#000;text-align:right; font-weight:bold">', '')
@@ -99,7 +101,31 @@ class yahoo_ff:
         return {'endofperiod': [parser.parse(x[-constants.date_string_length:]) for x in
                                 end_periods if x is not '']}
 
-    # def __get_price_at(self):
+
+
+    def package_sec_annually(self):
+        isa = pd.DataFrame(self.incomestatement_annual)
+        bsa = pd.DataFrame(self.balancesheet_annual)
+        csa = pd.DataFrame(self.cashflow_annual)
+        df = pd.merge(isa, bsa, on='endofperiod')
+        df1 = pd.merge(df, csa, on='endofperiod')
+        df1.set_index('endofperiod', inplace=True)
+        df1.transpose(inplace=True)
+        return df1
+
+
+    def package_sec_quarterly(self):
+        isa = pd.DataFrame(self.incomestatement_quarterly)
+        bsa = pd.DataFrame(self.balancesheet_quarterly)
+        csa = pd.DataFrame(self.cashflow_quarterly)
+        df = pd.merge(isa, bsa, on='endofperiod')
+        df1 = pd.merge(df, csa, on='endofperiod')
+        df1.set_index('endofperiod', inplace=True)
+        df1.transpose(inplace=True)
+        return df1
+
+
+        # def __get_price_at(self):
     #     mydata = Quandl.get("WIKI/AAPL")
 
 

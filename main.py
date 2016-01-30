@@ -3,7 +3,6 @@ __author__ = 'Alexandre'
 import time
 from yahoo_ff import *
 import pprint
-import pandas as pd
 import os
 
 
