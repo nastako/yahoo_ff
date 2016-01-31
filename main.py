@@ -15,7 +15,6 @@ def main():
     path = os.getcwd()
 
     data = yahoo_ff('aapl')
-    data.package_sec_annually().to_csv('aapl.csv')
 
 if __name__ == "__main__":
     main()

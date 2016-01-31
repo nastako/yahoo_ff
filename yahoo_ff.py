@@ -29,6 +29,7 @@ class yahoo_ff:
 
     def __construct_incomestatement_annual(self):
         html = get_source_code(get_annual_incomestatement_url(self.ticker))
+        html = html.split('Get Income Statement for:')[1]
         self.incomestatement_annual = self.__get_endofperiod(html)
         for field in self.incomestatement_fields:
             self.incomestatement_annual[field] = request(html, field)
@@ -37,6 +38,7 @@ class yahoo_ff:
 
     def __construct_incomestatement_quarterly(self):
         html = get_source_code(get_quarterly_incomestatement_url(self.ticker))
+        html = html.split('Get Income Statement for:')[1]
         self.incomestatement_quarterly = self.__get_endofperiod(html)
         for field in self.incomestatement_fields:
             self.incomestatement_quarterly[field] = request(html, field)
@@ -45,6 +47,7 @@ class yahoo_ff:
 
     def __construct_balancesheet_annual(self):
         html = get_source_code(get_annual_balancesheet_url(self.ticker))
+        html = html.split('Get Balance Sheet for:')[1]
         self.balancesheet_annual = self.__get_endofperiod(html)
         for field in self.balancesheet_fields:
             self.balancesheet_annual[field] = request(html, field)
@@ -53,6 +56,7 @@ class yahoo_ff:
 
     def __construct_balancesheet_quarterly(self):
         html = get_source_code(get_quarterly_balancesheet_url(self.ticker))
+        html = html.split('Get Balance Sheet for:')[1]
         self.balancesheet_quarterly = self.__get_endofperiod(html)
         for field in self.balancesheet_fields:
             self.balancesheet_quarterly[field] = request(html, field)
@@ -61,6 +65,7 @@ class yahoo_ff:
 
     def __construct_cashflow_annual(self):
         html = get_source_code(get_annual_cashflow_url(self.ticker))
+        html = html.split('Get Cash Flow for:')[1]
         self.cashflow_annual = self.__get_endofperiod(html)
         for field in self.cashflow_fields:
             self.cashflow_annual[field] = request(html, field)
@@ -69,6 +74,7 @@ class yahoo_ff:
 
     def __construct_cashflow_quarterly(self):
         html = get_source_code(get_quarterly_cashflow_url(self.ticker))
+        html = html.split('Get Cash Flow for:')[1]
         self.cashflow_quarterly = self.__get_endofperiod(html)
         for field in self.cashflow_fields:
             self.cashflow_quarterly[field] = request(html, field)
