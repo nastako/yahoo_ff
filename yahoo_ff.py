@@ -1,15 +1,11 @@
-author = 'Alexandre'
-
 from dateutil import parser
 from tools import *
 import Quandl
 import pandas as pd
-
 import constants
 
-#TODO get_metadata
 
-#TODO get_keystats
+# TODO get_keystats
 
 
 class yahoo_ff:
@@ -26,10 +22,13 @@ class yahoo_ff:
         self.__construct_cashflow_annual()
         self.__construct_cashflow_quarterly()
         self.__construct_stockinfo()
+        self.__get_pricehistory()
 
     def __construct_incomestatement_annual(self):
-        html = get_source_code(get_annual_incomestatement_url(self.ticker))
-        html = html.split('Get Income Statement for:')[1]
+        html = get_source_code(
+            get_annual_incomestatement_url(
+                self.ticker)).split('Get Income Statement for:')[1]
+
         self.incomestatement_annual = self.__get_endofperiod(html)
         for field in self.incomestatement_fields:
             self.incomestatement_annual[field] = request(html, field)
@@ -37,8 +36,10 @@ class yahoo_ff:
         print 'Annual income statement for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_incomestatement_quarterly(self):
-        html = get_source_code(get_quarterly_incomestatement_url(self.ticker))
-        html = html.split('Get Income Statement for:')[1]
+        html = get_source_code(
+            get_quarterly_incomestatement_url(
+                self.ticker)).split('Get Income Statement for:')[1]
+
         self.incomestatement_quarterly = self.__get_endofperiod(html)
         for field in self.incomestatement_fields:
             self.incomestatement_quarterly[field] = request(html, field)
@@ -46,8 +47,10 @@ class yahoo_ff:
         print 'Quarterly income statement for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_balancesheet_annual(self):
-        html = get_source_code(get_annual_balancesheet_url(self.ticker))
-        html = html.split('Get Balance Sheet for:')[1]
+        html = get_source_code(
+            get_annual_balancesheet_url(
+                self.ticker)).split('Get Balance Sheet for:')[1]
+
         self.balancesheet_annual = self.__get_endofperiod(html)
         for field in self.balancesheet_fields:
             self.balancesheet_annual[field] = request(html, field)
@@ -55,8 +58,10 @@ class yahoo_ff:
         print 'Annual balance sheet for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_balancesheet_quarterly(self):
-        html = get_source_code(get_quarterly_balancesheet_url(self.ticker))
-        html = html.split('Get Balance Sheet for:')[1]
+        html = get_source_code(
+            get_quarterly_balancesheet_url(
+                self.ticker)).split('Get Balance Sheet for:')[1]
+
         self.balancesheet_quarterly = self.__get_endofperiod(html)
         for field in self.balancesheet_fields:
             self.balancesheet_quarterly[field] = request(html, field)
@@ -64,35 +69,38 @@ class yahoo_ff:
         print 'Quarterly balance sheet for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_cashflow_annual(self):
-        html = get_source_code(get_annual_cashflow_url(self.ticker))
-        html = html.split('Get Cash Flow for:')[1]
+        html = get_source_code(
+            get_annual_cashflow_url(
+                self.ticker)).split('Get Cash Flow for:')[1]
+
         self.cashflow_annual = self.__get_endofperiod(html)
         for field in self.cashflow_fields:
             self.cashflow_annual[field] = request(html, field)
 
-        print 'Cash flows for ' + str(self.ticker) + ' successfuly obtained'
+        print 'Annual Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_cashflow_quarterly(self):
-        html = get_source_code(get_quarterly_cashflow_url(self.ticker))
-        html = html.split('Get Cash Flow for:')[1]
+        html = get_source_code(
+            get_quarterly_cashflow_url(
+                self.ticker)).split('Get Cash Flow for:')[1]
+
         self.cashflow_quarterly = self.__get_endofperiod(html)
         for field in self.cashflow_fields:
             self.cashflow_quarterly[field] = request(html, field)
 
-        print 'Cash flows for ' + str(self.ticker) + ' successfuly obtained'
-
+        print 'Quarterly Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_stockinfo(self):
         html = get_source_code(get_stockinfo_url(self.ticker))
         self.infos = get_infos(html)
-
 
     def __get_endofperiod(self, html):
         source_code = html
         end_periods = source_code.split('Period Ending')[1]
         end_periods = end_periods.split('</TR>')[0]
         # take out unwanted html formatting
-        end_periods = end_periods.replace('<TD class="yfnc_modtitle1" align="right"><b>', '')
+        end_periods = end_periods.replace(
+            '<TD class="yfnc_modtitle1" align="right"><b>', '')
         end_periods = end_periods.replace('<th scope="col" style="border-top:2px solid '
                                           '#000;text-align:right; font-weight:bold">', '')
         end_periods = end_periods.replace('</span></small></td>', '')
@@ -107,8 +115,6 @@ class yahoo_ff:
         return {'endofperiod': [parser.parse(x[-constants.date_string_length:]) for x in
                                 end_periods if x is not '']}
 
-
-
     def package_sec_annually(self):
         isa = pd.DataFrame(self.incomestatement_annual)
         bsa = pd.DataFrame(self.balancesheet_annual)
@@ -118,7 +124,6 @@ class yahoo_ff:
         df1.set_index('endofperiod', inplace=True)
         df1 = df1.transpose()
         return df1
-
 
     def package_sec_quarterly(self):
         isa = pd.DataFrame(self.incomestatement_quarterly)
@@ -130,11 +135,5 @@ class yahoo_ff:
         df1 = df1.transpose()
         return df1
 
-
-        # def __get_price_at(self):
-    #     mydata = Quandl.get("WIKI/AAPL")
-
-
-
-
-
+    def __get_pricehistory(self):
+        self.pricehistory = Quandl.get('WIKI/' + self.ticker)
