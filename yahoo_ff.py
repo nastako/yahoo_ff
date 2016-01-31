@@ -110,7 +110,7 @@ class yahoo_ff:
         df = pd.merge(isa, bsa, on='endofperiod')
         df1 = pd.merge(df, csa, on='endofperiod')
         df1.set_index('endofperiod', inplace=True)
-        df1.transpose(inplace=True)
+        df1 = df1.transpose()
         return df1
 
 
@@ -121,7 +121,7 @@ class yahoo_ff:
         df = pd.merge(isa, bsa, on='endofperiod')
         df1 = pd.merge(df, csa, on='endofperiod')
         df1.set_index('endofperiod', inplace=True)
-        df1.transpose(inplace=True)
+        df1 = df1.transpose()
         return df1
 
 
