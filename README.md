@@ -4,13 +4,7 @@ package to obtain financial fundamental data for stocks
 ## Requirements
 ```
 pip install Quandl
-```
-
-```
 pip install pandas
-```
-
-```
 pip install pickle
 ```
 
