@@ -6,9 +6,11 @@ import constants
 
 
 # TODO get_keystats
-
+# TODO create_database
+# TODO update_database
 
 class yahoo_ff:
+    '''class contains incomestatement, balancesheet, cashflow and price history for a ticker'''
     incomestatement_fields = constants.incomestatement_fields
     balancesheet_fields = constants.balancesheet_fields
     cashflow_fields = constants.cashflow_fields
@@ -25,6 +27,7 @@ class yahoo_ff:
         self.__get_pricehistory()
 
     def __construct_incomestatement_annual(self):
+        '''populate self.incomestatement_annual'''
         html = get_source_code(
             get_annual_incomestatement_url(
                 self.ticker)).split('Get Income Statement for:')[1]
@@ -36,6 +39,8 @@ class yahoo_ff:
         print 'Annual income statement for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_incomestatement_quarterly(self):
+        '''populate self.incomestatement_quarterly'''
+
         html = get_source_code(
             get_quarterly_incomestatement_url(
                 self.ticker)).split('Get Income Statement for:')[1]
@@ -47,6 +52,7 @@ class yahoo_ff:
         print 'Quarterly income statement for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_balancesheet_annual(self):
+        '''populate self.balancesheet_annual'''
         html = get_source_code(
             get_annual_balancesheet_url(
                 self.ticker)).split('Get Balance Sheet for:')[1]
@@ -58,6 +64,7 @@ class yahoo_ff:
         print 'Annual balance sheet for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_balancesheet_quarterly(self):
+        '''populate self.balancesheet_quarterly'''
         html = get_source_code(
             get_quarterly_balancesheet_url(
                 self.ticker)).split('Get Balance Sheet for:')[1]
@@ -69,6 +76,7 @@ class yahoo_ff:
         print 'Quarterly balance sheet for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_cashflow_annual(self):
+        '''populate self.cashflow_annual'''
         html = get_source_code(
             get_annual_cashflow_url(
                 self.ticker)).split('Get Cash Flow for:')[1]
@@ -80,6 +88,7 @@ class yahoo_ff:
         print 'Annual Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_cashflow_quarterly(self):
+        '''populate self.cashflow_quarterly'''
         html = get_source_code(
             get_quarterly_cashflow_url(
                 self.ticker)).split('Get Cash Flow for:')[1]
@@ -91,10 +100,12 @@ class yahoo_ff:
         print 'Quarterly Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
 
     def __construct_stockinfo(self):
+        '''get basic information on the stock (sector, industry, nb of employees'''
         html = get_source_code(get_stockinfo_url(self.ticker))
         self.infos = get_infos(html)
 
     def __get_endofperiod(self, html):
+        '''scrape the html source code for the ending periods of each column'''
         source_code = html
         end_periods = source_code.split('Period Ending')[1]
         end_periods = end_periods.split('</TR>')[0]
@@ -106,7 +117,7 @@ class yahoo_ff:
         end_periods = end_periods.replace('</span></small></td>', '')
         end_periods = end_periods.replace('</span></small></TD>', '')
         end_periods = end_periods.replace('</b>', '')
-
+        #s split
         end_periods = end_periods.split('</th>')
         # if '</th>' is not used to split periods
         if len(end_periods) == 1:
@@ -116,6 +127,8 @@ class yahoo_ff:
                                 end_periods if x is not '']}
 
     def package_sec_annually(self):
+        '''package all annual info from incomestatement, blanacesheet and cashflow into a pandas
+        dataframe'''
         isa = pd.DataFrame(self.incomestatement_annual)
         bsa = pd.DataFrame(self.balancesheet_annual)
         csa = pd.DataFrame(self.cashflow_annual)
@@ -126,6 +139,8 @@ class yahoo_ff:
         return df1
 
     def package_sec_quarterly(self):
+        '''package all quarterly info from incomestatement, blanacesheet and cashflow into a pandas
+        dataframe'''
         isa = pd.DataFrame(self.incomestatement_quarterly)
         bsa = pd.DataFrame(self.balancesheet_quarterly)
         csa = pd.DataFrame(self.cashflow_quarterly)
@@ -136,4 +151,5 @@ class yahoo_ff:
         return df1
 
     def __get_pricehistory(self):
+        '''get stock price history and volume traded using quandl api'''
         self.pricehistory = Quandl.get('WIKI/' + self.ticker)
