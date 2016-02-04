@@ -6,7 +6,7 @@ import os
 
 
 class database:
-    '''class contains incomestatement, balancesheet, cashflow and price history for a ticker'''
+    '''creates a pickle database for a list of tickers specified in list.formatlist file'''
     formatlist = '.txt'
 
     def __init__(self, list):
