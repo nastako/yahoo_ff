@@ -6,8 +6,7 @@ import constants
 
 
 # TODO get_keystats
-# TODO create_database
-# TODO update_database
+
 
 class yahoo_ff:
     '''class contains incomestatement, balancesheet, cashflow and price history for a ticker'''
