@@ -16,7 +16,7 @@ def main():
 
     aapl = pickle.load(open('test.p', "rb"))
 
-    pp.pprint (aapl.package_sec_annually())
+    pp.pprint (aapl.package_sec_annually().head())
 
     pp.pprint (aapl.pricehistory.resample('M').head())
 
