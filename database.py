@@ -1,7 +1,6 @@
 from yahoo_ff import yahoo_ff
 import os
 import pickle
-import time
 
 # TODO check if exists already, check if all files are there
 
@@ -22,14 +21,13 @@ class database:
         with open(self.filename, 'rb') as list:
             for ticker in list:
                 try:
+                    ticker = ticker.strip()
                     pickle.dump(yahoo_ff(ticker), open(self.location + ticker + '.p', 'wb'))
                     print 'added ' + ticker + ' to database ' + self.name
-                    self.wait(0.2)
                 except:
                     print 'failed getting data for ' + ticker
 
-    def __wait(seconds):
-        time.sleep(seconds)
+        return 0
 
     def take(self, ticker):
         # return the yahoo_ff object that was stored in a pickle file of the database
