@@ -1,24 +1,16 @@
-import time
-from yahoo_ff import *
 import pprint
-import pickle
+from database import database
 
-def wait(seconds):
-    time.sleep(seconds)
 
 
 def main():
     pp = pprint.PrettyPrinter(indent=0)
 
-    # aapl = yahoo_ff('aapl')
+    sp500test = database('sp500test')
 
-    # pickle.dump(aapl, open('test.p', 'wb'))
+    pp.pprint (sp500test.take('tsla').package_sec_annually().head())
 
-    aapl = pickle.load(open('test.p', "rb"))
-
-    pp.pprint (aapl.package_sec_annually())
-
-    pp.pprint (aapl.pricehistory.resample('M').head())
+    pp.pprint (sp500test.take('tsla').pricehistory.resample('M').head())
 
 if __name__ == "__main__":
     main()
