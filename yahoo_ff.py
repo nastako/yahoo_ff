@@ -3,6 +3,7 @@ from tools import *
 import Quandl
 import pandas as pd
 import constants
+import time
 
 
 # TODO get_keystats
@@ -17,13 +18,21 @@ class yahoo_ff:
     def __init__(self, ticker):
         self.ticker = ticker
         self.__construct_incomestatement_annual()
+        self.__wait(.2)
         self.__construct_incomestatement_quarterly()
+        self.__wait(.2)
         self.__construct_balancesheet_annual()
+        self.__wait(.2)
         self.__construct_balancesheet_quarterly()
+        self.__wait(.2)
         self.__construct_cashflow_annual()
+        self.__wait(.2)
         self.__construct_cashflow_quarterly()
+        self.__wait(.2)
         self.__construct_stockinfo()
+        self.__wait(.2)
         self.__get_pricehistory()
+
 
     def __construct_incomestatement_annual(self):
         '''populate self.incomestatement_annual'''
@@ -180,3 +189,6 @@ class yahoo_ff:
             self.pricehistory = Quandl.get('WIKI/' + self.ticker)
         except Exception, e:
             print 'failed get_pricehistory for ' + self.ticker + ', ' + str(e)
+
+    def __wait(self, seconds):
+        time.sleep(seconds)
