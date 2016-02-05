@@ -8,7 +8,7 @@ def main():
 
     sp500test = database('sp500test')
 
-    pp.pprint (sp500test.take('tsla').package_sec_annually().head())
+    pp.pprint (sp500test.take('aapl').package_sec_annually().head())
 
     pp.pprint (sp500test.take('tsla').pricehistory.resample('M').head())
 
