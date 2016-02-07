@@ -29,7 +29,9 @@ class stocks_database:
                     data = yahoo_ff(ticker)
                     if not data.flag:
                         pickle.dump(data, open(self.location + ticker + '.p', 'wb'))
-                        print 'failed to get data for ' + ticker
+                        print 'dumped to pickle data of ' + ticker
+                    else:
+                        print 'failed to get full data of ' + ticker
                 else:
                     print 'already exists ' + ticker + ' in database ' + self.name
 

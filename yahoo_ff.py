@@ -34,7 +34,6 @@ class yahoo_ff:
             self.__construct_stockinfo()
             self.__wait(yahoo_ff.sleep)
             self.__get_pricehistory()
-            print 'created object for ' + self.ticker + '; ' + str(e)
 
     def __construct_incomestatement_annual(self):
         '''populate self.incomestatement_annual'''
