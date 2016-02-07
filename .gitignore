@@ -1,2 +1,6 @@
 .idea
 *.pyc
+.cache/
+*.json
+*.csv
+*_db
