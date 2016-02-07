@@ -4,9 +4,7 @@ import Quandl
 import pandas as pd
 import constants
 import time
-
-
-# TODO get_keystats
+import json
 
 
 class yahoo_ff:
@@ -14,27 +12,29 @@ class yahoo_ff:
     incomestatement_fields = constants.incomestatement_fields
     balancesheet_fields = constants.balancesheet_fields
     cashflow_fields = constants.cashflow_fields
+    sleep = 1 # sec
 
     def __init__(self, ticker):
-        try:
+
+            self.flag = 0
             self.ticker = ticker
+            self.__wait(yahoo_ff.sleep)
             self.__construct_incomestatement_annual()
-            self.__wait(.2)
+            self.__wait(yahoo_ff.sleep)
             self.__construct_incomestatement_quarterly()
-            self.__wait(.2)
+            self.__wait(yahoo_ff.sleep)
             self.__construct_balancesheet_annual()
-            self.__wait(.2)
+            self.__wait(yahoo_ff.sleep)
             self.__construct_balancesheet_quarterly()
-            self.__wait(.2)
+            self.__wait(yahoo_ff.sleep)
             self.__construct_cashflow_annual()
-            self.__wait(.2)
+            self.__wait(yahoo_ff.sleep)
             self.__construct_cashflow_quarterly()
-            self.__wait(.2)
+            self.__wait(yahoo_ff.sleep)
             self.__construct_stockinfo()
-            self.__wait(.2)
+            self.__wait(yahoo_ff.sleep)
             self.__get_pricehistory()
-        except Exception, e:
-            print 'failed getting data for' + self.ticker + '; ' + str(e)
+            print 'created object for ' + self.ticker + '; ' + str(e)
 
     def __construct_incomestatement_annual(self):
         '''populate self.incomestatement_annual'''
@@ -47,8 +47,9 @@ class yahoo_ff:
             for field in self.incomestatement_fields:
                 self.incomestatement_annual[field] = request(html, field)
 
-            # print 'Annual income statement for ' + str(self.ticker) + ' successfuly obtained'
+            print 'Annual income statement for ' + str(self.ticker) + ' successfuly obtained'
         except Exception,e:
+            self.flag = 1
             print 'failed construct_incomestatement_annual for ' + self.ticker + '; ' + str(e)
 
     def __construct_incomestatement_quarterly(self):
@@ -62,8 +63,9 @@ class yahoo_ff:
             for field in self.incomestatement_fields:
                 self.incomestatement_quarterly[field] = request(html, field)
 
-            # print 'Quarterly income statement for ' + str(self.ticker) + ' successfuly obtained'
+            print 'Quarterly income statement for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
+            self.flag = 1
             print 'failed construct_incomestatement_quarterly for ' + self.ticker + '; ' + str(e)
 
     def __construct_balancesheet_annual(self):
@@ -77,8 +79,9 @@ class yahoo_ff:
             for field in self.balancesheet_fields:
                 self.balancesheet_annual[field] = request(html, field)
 
-            # print 'Annual balance sheet for ' + str(self.ticker) + ' successfuly obtained'
+            print 'Annual balance sheet for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
+            self.flag = 1
             print 'failed construct_balancesheet_annual for ' + self.ticker + '; ' + str(e)
 
     def __construct_balancesheet_quarterly(self):
@@ -92,8 +95,9 @@ class yahoo_ff:
             for field in self.balancesheet_fields:
                 self.balancesheet_quarterly[field] = request(html, field)
 
-            # print 'Quarterly balance sheet for ' + str(self.ticker) + ' successfuly obtained'
+            print 'Quarterly balance sheet for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
+            self.flag = 1
             print 'failed construct_balancesheet_quarterly for ' + self.ticker + '; ' + str(e)
 
     def __construct_cashflow_annual(self):
@@ -107,8 +111,9 @@ class yahoo_ff:
             for field in self.cashflow_fields:
                 self.cashflow_annual[field] = request(html, field)
 
-            # print 'Annual Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
+            print 'Annual Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
+            self.flag = 1
             print 'failed construct_cashflow_annual for ' + self.ticker + '; ' + str(e)
 
     def __construct_cashflow_quarterly(self):
@@ -122,8 +127,9 @@ class yahoo_ff:
             for field in self.cashflow_fields:
                 self.cashflow_quarterly[field] = request(html, field)
 
-            # print 'Quarterly Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
+            print 'Quarterly Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
+            self.flag = 1
             print 'failed construct_cashflow_quarterly for ' + self.ticker + '; ' + str(e)
 
     def __construct_stockinfo(self):
@@ -133,6 +139,7 @@ class yahoo_ff:
             self.infos = get_infos(html)
 
         except Exception, e:
+            self.flag = 1
             print 'failed construct_stockinfo for ' + self.ticker + '; ' + str(e)
 
     def __get_endofperiod(self, html):
@@ -183,10 +190,14 @@ class yahoo_ff:
 
     def __get_pricehistory(self):
         '''get stock price history and volume traded using quandl api'''
-        try:
-            self.pricehistory = Quandl.get('WIKI/' + self.ticker)
-        except Exception, e:
-            print 'failed get_pricehistory for ' + self.ticker + '; ' + str(e)
+        with open('credentials.json', 'r') as creds:
+            credentials = json.load(creds)
+            try:
+                self.pricehistory = Quandl.get('WIKI/' + self.ticker, authtoken=credentials[
+                                                                        'Quandl']['key'])
+            except Exception, e:
+                self.flag = 1
+                print 'failed get_pricehistory for ' + self.ticker + '; ' + str(e)
 
     def __wait(self, seconds):
         time.sleep(seconds)

@@ -25,8 +25,13 @@ class stocks_database:
         with open(self.filename, 'r') as f:
             tickers = (f.read().split())
             for ticker in tickers:
-                pickle.dump(yahoo_ff(ticker), open(self.location + ticker + '.p', 'wb'))
-                print 'added ' + ticker + ' to database ' + self.name
+                if not os.path.exists(self.location + ticker + '.p'):
+                    data = yahoo_ff(ticker)
+                    if not data.flag:
+                        pickle.dump(data, open(self.location + ticker + '.p', 'wb'))
+                        print 'failed to get data for ' + ticker
+                else:
+                    print 'already exists ' + ticker + ' in database ' + self.name
 
     def take(self, ticker):
         # return the yahoo_ff object that was stored in a pickle file of the database
