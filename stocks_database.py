@@ -16,12 +16,14 @@ class stocks_database:
         self.location = os.getcwd() + '/' + list + '_db/'
         if not os.path.exists(self.location):
             os.makedirs(self.location)
+            print 'created database folder ' + self.location
             self.__create()
         else:
-            print 'database ' + self.name + ' already exists'
+            print 'database ' + self.name + ' already exists at ' + self.location
+            self.__create()
 
     def __create(self):
-        # create the database with for loop, make pickle file for each
+        '''create the database with for loop, make pickle file for each'''
         with open(self.filename, 'r') as f:
             tickers = (f.read().split())
             for ticker in tickers:
@@ -33,8 +35,8 @@ class stocks_database:
                     else:
                         print 'failed to get full data of ' + ticker
                 else:
-                    print 'already exists ' + ticker + ' in database ' + self.name
+                    print 'data for ' + ticker + ' already in database ' + self.name
 
     def take(self, ticker):
-        # return the yahoo_ff object that was stored in a pickle file of the database
+        '''return the yahoo_ff object that was stored in a pickle file of the database'''
         return pickle.load(open(self.location + ticker + '.p', 'rb'))

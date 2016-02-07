@@ -15,7 +15,6 @@ class yahoo_ff:
     sleep = 1 # sec
 
     def __init__(self, ticker):
-
             self.flag = 0
             self.ticker = ticker
             self.__wait(yahoo_ff.sleep)
@@ -34,6 +33,7 @@ class yahoo_ff:
             self.__construct_stockinfo()
             self.__wait(yahoo_ff.sleep)
             self.__get_pricehistory()
+            print 'flag is ' + str(self.flag)
 
     def __construct_incomestatement_annual(self):
         '''populate self.incomestatement_annual'''
@@ -45,7 +45,6 @@ class yahoo_ff:
             self.incomestatement_annual = self.__get_endofperiod(html)
             for field in self.incomestatement_fields:
                 self.incomestatement_annual[field] = request(html, field)
-
             print 'Annual income statement for ' + str(self.ticker) + ' successfuly obtained'
         except Exception,e:
             self.flag = 1
@@ -61,7 +60,6 @@ class yahoo_ff:
             self.incomestatement_quarterly = self.__get_endofperiod(html)
             for field in self.incomestatement_fields:
                 self.incomestatement_quarterly[field] = request(html, field)
-
             print 'Quarterly income statement for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
             self.flag = 1
@@ -73,11 +71,9 @@ class yahoo_ff:
             html = get_source_code(
                 get_annual_balancesheet_url(
                     self.ticker)).split('Get Balance Sheet for:')[1]
-
             self.balancesheet_annual = self.__get_endofperiod(html)
             for field in self.balancesheet_fields:
                 self.balancesheet_annual[field] = request(html, field)
-
             print 'Annual balance sheet for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
             self.flag = 1
@@ -89,11 +85,9 @@ class yahoo_ff:
             html = get_source_code(
             get_quarterly_balancesheet_url(
                 self.ticker)).split('Get Balance Sheet for:')[1]
-
             self.balancesheet_quarterly = self.__get_endofperiod(html)
             for field in self.balancesheet_fields:
                 self.balancesheet_quarterly[field] = request(html, field)
-
             print 'Quarterly balance sheet for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
             self.flag = 1
@@ -105,11 +99,9 @@ class yahoo_ff:
             html = get_source_code(
                 get_annual_cashflow_url(
                     self.ticker)).split('Get Cash Flow for:')[1]
-
             self.cashflow_annual = self.__get_endofperiod(html)
             for field in self.cashflow_fields:
                 self.cashflow_annual[field] = request(html, field)
-
             print 'Annual Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
             self.flag = 1
@@ -121,11 +113,9 @@ class yahoo_ff:
             html = get_source_code(
                 get_quarterly_cashflow_url(
                     self.ticker)).split('Get Cash Flow for:')[1]
-
             self.cashflow_quarterly = self.__get_endofperiod(html)
             for field in self.cashflow_fields:
                 self.cashflow_quarterly[field] = request(html, field)
-
             print 'Quarterly Cash Flows for ' + str(self.ticker) + ' successfuly obtained'
         except Exception, e:
             self.flag = 1
@@ -136,7 +126,6 @@ class yahoo_ff:
         try:
             html = get_source_code(get_stockinfo_url(self.ticker))
             self.infos = get_infos(html)
-
         except Exception, e:
             self.flag = 1
             print 'failed construct_stockinfo for ' + self.ticker + '; ' + str(e)
@@ -192,8 +181,8 @@ class yahoo_ff:
         with open('credentials.json', 'r') as creds:
             credentials = json.load(creds)
             try:
-                self.pricehistory = Quandl.get('WIKI/' + self.ticker, authtoken=credentials[
-                                                                        'Quandl']['key'])
+                self.pricehistory = Quandl.get(
+                    'WIKI/' + self.ticker, authtoken=credentials['Quandl']['key'])
             except Exception, e:
                 self.flag = 1
                 print 'failed get_pricehistory for ' + self.ticker + '; ' + str(e)
