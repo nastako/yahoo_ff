@@ -1,16 +1,13 @@
 import pprint
-from database import database
+from stocks_database import stocks_database
 
 
 
 def main():
     pp = pprint.PrettyPrinter(indent=0)
 
-    sp500test = database('sp500test')
+    sp500test = stocks_database('sp500')
 
-    pp.pprint (sp500test.take('aapl').package_sec_annually().head())
-
-    pp.pprint (sp500test.take('tsla').pricehistory.resample('M').head())
 
 if __name__ == "__main__":
     main()
