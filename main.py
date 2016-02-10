@@ -1,5 +1,6 @@
 import pprint
-from stocks_database import stocks_database
+
+from yahoo_ff.stocks_database import stocks_database
 
 
 def main():

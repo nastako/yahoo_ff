@@ -2,7 +2,7 @@ from yahoo_ff import yahoo_ff
 import os
 import Quandl
 import pickle
-from keys import quandl
+
 # TODO check if exists already, check if all files are there
 
 class macro_database:
