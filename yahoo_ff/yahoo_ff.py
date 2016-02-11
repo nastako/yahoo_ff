@@ -19,21 +19,21 @@ class yahoo_ff:
     def __init__(self, ticker):
             self.flag = 0
             self.ticker = ticker
-            self.__wait(yahoo_ff.sleep)
+            self.__wait()
             self.__construct_incomestatement_annual()
-            self.__wait(yahoo_ff.sleep)
+            self.__wait()
             self.__construct_incomestatement_quarterly()
-            self.__wait(yahoo_ff.sleep)
+            self.__wait()
             self.__construct_balancesheet_annual()
-            self.__wait(yahoo_ff.sleep)
+            self.__wait()
             self.__construct_balancesheet_quarterly()
-            self.__wait(yahoo_ff.sleep)
+            self.__wait()
             self.__construct_cashflow_annual()
-            self.__wait(yahoo_ff.sleep)
+            self.__wait()
             self.__construct_cashflow_quarterly()
-            self.__wait(yahoo_ff.sleep)
+            self.__wait()
             self.__construct_stockinfo()
-            self.__wait(yahoo_ff.sleep)
+            self.__wait()
             self.__get_pricehistory()
             print 'flag is ' + str(self.flag)
 
@@ -189,5 +189,5 @@ class yahoo_ff:
                 self.flag = 1
                 print 'failed get_pricehistory for ' + self.ticker + '; ' + str(e)
 
-    def __wait(self, seconds):
-        time.sleep(seconds)
+    def __wait(self):
+        time.sleep(yahoo_ff.sleep)
