@@ -6,7 +6,7 @@ import Quandl
 import pandas as pd
 import constants
 
-from tools import *
+from .tools import *
 
 
 class yahoo_ff:

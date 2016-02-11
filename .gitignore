@@ -9,3 +9,9 @@
 # created during testing
 *.csv
 *_db
+
+# dist package
+dist
+*.gz
+*.egg
+*.egg-info

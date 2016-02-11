@@ -1,4 +1,4 @@
-from yahoo_ff import yahoo_ff
+from .yahoo_ff import yahoo_ff
 import os
 import pickle
 

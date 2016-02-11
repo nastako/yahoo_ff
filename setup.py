@@ -7,5 +7,5 @@ setup(name='yahoo_ff',
       author='Alexandre Sobolevski',
       author_email='',
       license='MIT',
-      packages=['yhaoo_ff'],
+      packages=['yahoo_ff'],
       zip_safe=False)

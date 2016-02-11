@@ -4,7 +4,7 @@ database to be quickly used later.
 ## Installation
 From the cloned directory:
 ```
-$ python setup.py install
+pip install yahoo_ff
 ```
 ## Using
 ### A single stock

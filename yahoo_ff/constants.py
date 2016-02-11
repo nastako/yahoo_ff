@@ -1,5 +1,3 @@
-__author__ = 'Alexandre'
-
 incomestatement_fields = ['Total Revenue',
                           'Cost of Revenue',
                           'Gross Profit',
