@@ -1,6 +1,10 @@
 import pytest
 import pickle
-from yahoo_ff import *
+from yahoo_ff import yahoo_ff
+
+
+# TODO add many more tests
+#       check if 3 arguments in time in annually, if not, fill with NaN
 
 def test_package_sec_annually():
     aapl = yahoo_ff('aapl')
