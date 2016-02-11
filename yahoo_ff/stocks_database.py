@@ -39,4 +39,8 @@ class stocks_database:
 
     def take(self, ticker):
         '''return the yahoo_ff object that was stored in a pickle file of the database'''
-        return pickle.load(open(self.location + ticker + '.p', 'rb'))
+        if os.path.exists(self.location + ticker + '.p'):
+            return pickle.load(open(self.location + ticker + '.p', 'rb'))
+        else:
+            print 'no record of ' + ticker + ' in database ' + self.name
+            return None
