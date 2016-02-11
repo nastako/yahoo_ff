@@ -4,9 +4,9 @@ import json
 from dateutil import parser
 import Quandl
 import pandas as pd
+import constants
 
-from yahoo_ff.tools import *
-from yahoo_ff import constants
+from tools import *
 
 
 class yahoo_ff:
@@ -180,7 +180,7 @@ class yahoo_ff:
 
     def __get_pricehistory(self):
         '''get stock price history and volume traded using quandl api'''
-        with open('credentials.json', 'r') as creds:
+        with open('yahoo_ff/credentials.json', 'r') as creds:
             credentials = json.load(creds)
             try:
                 self.pricehistory = Quandl.get(
