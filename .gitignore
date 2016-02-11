@@ -1,6 +1,11 @@
+# useless
 .idea
 *.pyc
 .cache/
+
+# credentials
 *.json
+
+# created during testing
 *.csv
 *_db
